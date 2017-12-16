@@ -56,7 +56,7 @@ function msgError() {
 
 function loadCities(evt) {
   if (lock == false) {
-    fetch('../data.json')
+    fetch('./data.json')
       .then(res => {
         if (Math.random() > 0.5) {
           throw new Error('данные не загружены, попробуйте повторить загрузку');
