@@ -49,7 +49,7 @@ function validateCity(cities, evt) {
 function msgError() {
   // clearTimeout(noConnect);
   noConnect = setTimeout(function () {
-    render.innerHTML = 'Ой что-то пошло не так';
+    renderContainer.querySelector('.rendered').innerHTML = 'Ой что-то пошло не так';
   }, 5000)
 };
 
@@ -58,9 +58,9 @@ function loadCities(evt) {
   if (lock == false) {
     fetch('../data.json')
       .then(res => {
-        // if (Math.random() > 0.5) {
-        //   throw new Error('данные не загружены, попробуйте повторить загрузку');
-        // }
+        if (Math.random() > 0.5) {
+          throw new Error('данные не загружены, попробуйте повторить загрузку');
+        }
         lock = true;
         setTimeout(function () {
           return res.json()
@@ -68,7 +68,7 @@ function loadCities(evt) {
               cities = res;
               console.log(cities);
             })
-        }, getRandomInt(1, 2));
+        }, getRandomInt(1000, 2000));
       })
       .catch(e => {
         console.error(e);
