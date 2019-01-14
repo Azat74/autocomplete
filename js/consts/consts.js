@@ -15,3 +15,5 @@ export const popularCities = [{
 export const MSG_ERROR = 'Ой что-то пошло не так';
 export const MSG_RELOAD = 'повторная загрузка будет запущена через 10 секунд';
 export const TRY_LOAD = 'данные не загружены, попробуйте повторить загрузку';
+
+export const MAX_RESULT = 5;

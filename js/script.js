@@ -3,7 +3,8 @@ import {
   popularCities,
   MSG_RELOAD,
   MSG_ERROR,
-  TRY_LOAD
+  TRY_LOAD,
+  MAX_RESULT
 } from './consts/consts.js';
 import {
   getRandomInt
@@ -27,7 +28,7 @@ function validateCity(cities, e) {
       foundCity += 1;
     }
     if (!!renderContainer) {
-      if (foundCity == 0) {
+      if (foundCity === 0) {
         renderContainer.classList.add('render-city_error');
       } else {
         if (renderContainer.classList.contains('render-city_error')) {
@@ -50,7 +51,7 @@ function msgError() {
 
 
 function loadCities(e) {
-  if (lock == false) {
+  if (!lock) {
     fetch('./data.json')
       .then(res => {
         /* Disable error simulation
@@ -91,7 +92,8 @@ function showPopularCities(e) {
   popularCities.forEach(function (el) {
     let li = document.createElement('div');
     li.classList.add('rendered__element');
-    li.innerText = el['Id'] + ' ' + el['City'];
+    const idCity = `${el['Id']} ${el['City']}`;
+    li.innerText = idCity;
     li.addEventListener('click', function () {
       inputCityId.value = el['Id'];
       input.value = el['City'];
@@ -105,7 +107,7 @@ function showPopularCities(e) {
 }
 
 function showCities(e) {
-  if (renderContainer.querySelector('.rendered')) {
+  if (!!renderContainer.querySelector('.rendered')) {
     clean.appendChild(renderContainer.querySelector('.rendered'));
     clean.innerHTML = '';
   }
@@ -118,7 +120,7 @@ function showCities(e) {
   let length = document.createElement('div');
   length.classList.add('rendered__length');
 
-  if (cities.length == 0) {
+  if (cities.length === 0) {
     length.innerHTML = '<div class="loader"></div><div>Загрузка</div>';
     msgError();
   };
@@ -126,13 +128,14 @@ function showCities(e) {
     return el['Id'].toString().startsWith(e.target.value) ||
       el['City'].toLowerCase().startsWith(e.target.value.toLowerCase());
   });
-  let sliced = result.slice(0, 5);
+  let sliced = result.slice(0, MAX_RESULT);
   let list = document.createElement('div');
   list.classList.add('rendered__contain');
   sliced.forEach(function (el) {
     let li = document.createElement('div');
     li.classList.add('rendered__element');
-    li.innerText = el['Id'] + ' ' + el['City'];
+    const idCity = `${el['Id']} ${el['City']}`;
+    li.innerText = idCity;
     li.addEventListener('click', function () {
       inputCityId.value = el['Id'];
       input.value = el['City'];
@@ -142,21 +145,24 @@ function showCities(e) {
     });
     list.appendChild(li);
   });
-  if (result.length == 1) {
-    if (result[0]['Id'].toString() == e.target.value || result[0]['City'].toLowerCase() == e.target.value.toLowerCase()) {
+  if (result.length === 1) {
+    const firstResultId = result[0]['Id'];
+    const firstResultCity = result[0]['City'].toLowerCase();
+    if (firstResultId.toString() === e.target.value ||
+      firstResultCity === e.target.value.toLowerCase()) {
       e.target.value = result[0]['City'];
-      inputCityId.value = result[0]['Id'];
+      inputCityId.value = firstResultId;
     }
   }
   if (cities.length > 0) {
     length.innerText = `Показано ${sliced.length} из ${result.length} найденных городов`;
   }
-  if (result.length == 0 && cities.length > 0) {
+  if (result.length === 0 && cities.length > 0) {
     length.innerHTML = '<div>Не найдено</div>';
   }
   render.appendChild(list);
   list.appendChild(length);
-  if (this.value == 0) {
+  if (this.value === 0) {
     clean.appendChild(render);
     clean.innerHTML = '';
     // showPopularCities(e);
@@ -180,7 +186,6 @@ input.onfocus = function () {
 }
 
 input.onblur = function () {
-  console.log('test');
   setTimeout(function () {
     try {
       clean.appendChild(renderContainer.querySelector('.rendered'));
