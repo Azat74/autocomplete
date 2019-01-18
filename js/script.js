@@ -9,15 +9,31 @@ import {
 import {
   getRandomInt
 } from './helpers/helpers.js'
-let clean = document.querySelector('#clean');
-let renderContainer = document.querySelector('#render-city');
-let inputCityId = renderContainer.querySelector('.input-city-id');
+const clean = document.querySelector('#clean');
+const renderContainer = document.querySelector('#render-city');
+const inputCityId = renderContainer.querySelector('.input-city-id');
 let cities = [];
-let input = document.querySelector('.input-city');
+const input = document.querySelector('.input-city');
 let lock = false;
 let noConnect;
 let validate;
 
+
+function toggleErrorNode(error = true) {
+  if (!!renderContainer) {
+    if (!!error) {
+      renderContainer.classList.add('render-city_error');
+    } else {
+      if (renderContainer.classList.contains('render-city_error')) {
+        renderContainer.classList.remove('render-city_error');
+      }
+    }
+  }
+}
+
+/*
+  Проверка на наличие подходящих совпадений города
+*/
 function validateCity(cities, e) {
   let foundCity = 0;
   cities.forEach(function (city) {
@@ -27,19 +43,22 @@ function validateCity(cities, e) {
       console.log(cityLabel);
       foundCity += 1;
     }
-    if (!!renderContainer) {
-      if (foundCity === 0) {
-        renderContainer.classList.add('render-city_error');
-      } else {
-        if (renderContainer.classList.contains('render-city_error')) {
-          renderContainer.classList.remove('render-city_error');
-        }
-      }
+    if (foundCity === 0) {
+      toggleErrorNode();
+    } else {
+      toggleErrorNode(false);
     }
   })
   console.log(foundCity);
 }
 
+/*
+  Проверка на наличие подходящих совпадений города end
+*/
+
+/*
+  Сообщение об ошибке
+*/
 function msgError() {
   // clearTimeout(noConnect);
   if (!!renderContainer.querySelector('.rendered')) {
@@ -49,7 +68,11 @@ function msgError() {
   }
 };
 
+/* Сообщение об ошибке end */
 
+/*
+  Загрузка городов
+*/
 function loadCities(e) {
   if (!lock) {
     fetch('./data.json')
@@ -78,7 +101,12 @@ function loadCities(e) {
       });
   }
 }
+/* Загрузка городов end */
 
+
+/*
+  Показать популярные города
+*/
 function showPopularCities(e) {
   let render = document.createElement('div');
   render.classList.add('rendered');
@@ -106,6 +134,13 @@ function showPopularCities(e) {
   render.appendChild(list);
 }
 
+/*
+  Показать популярные города end
+*/
+
+/*
+  Показать города
+*/
 function showCities(e) {
   if (!!renderContainer.querySelector('.rendered')) {
     clean.appendChild(renderContainer.querySelector('.rendered'));
@@ -117,7 +152,7 @@ function showCities(e) {
   renderContainer.appendChild(render);
   render.innerHTML = '';
   let result = '';
-  let length = document.createElement('div');
+  const length = document.createElement('div');
   length.classList.add('rendered__length');
 
   if (cities.length === 0) {
@@ -170,6 +205,10 @@ function showCities(e) {
   clearTimeout(validate);
   validate = setTimeout(validateCity, 2000, cities, e);
 }
+
+/*
+  Показать города end
+*/
 
 // events
 
