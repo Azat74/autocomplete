@@ -59,13 +59,18 @@ function validateCity(cities, e) {
 /*
   Сообщение об ошибке
 */
-function msgError() {
+function msgError(node) {
   // clearTimeout(noConnect);
+  /*
   if (!!renderContainer.querySelector('.rendered')) {
     noConnect = setTimeout(function () {
       renderContainer.querySelector('.rendered').innerHTML = MSG_ERROR;
     }, 5000)
   }
+  */
+  noConnect = setTimeout(function () {
+    node.innerHTML = MSG_ERROR;
+  }, 5000)
 };
 
 /* Сообщение об ошибке end */
@@ -93,7 +98,8 @@ function loadCities(e) {
       })
       .catch(e => {
         console.error(e);
-        msgError();
+        const renderContainerPopup = renderContainer.querySelector('.rendered');
+        msgError(renderContainerPopup);
         console.info(MSG_RELOAD);
         setTimeout(function () {
           input.click();
@@ -157,7 +163,8 @@ function showCities(e) {
 
   if (cities.length === 0) {
     length.innerHTML = '<div class="loader"></div><div>Загрузка</div>';
-    msgError();
+    const renderContainerPopup = renderContainer.querySelector('.rendered');
+    msgError(renderContainerPopup);
   };
   result = cities.filter(function (el) {
     return el['Id'].toString().startsWith(e.target.value) ||
